@@ -1,4 +1,4 @@
-package com.example.trabalhoquiz
+package com.example.questionario
 
 import org.junit.Test
 
