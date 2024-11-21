@@ -1,4 +1,4 @@
-package com.example.trabalhoquiz.view
+package com.example.questionario.view
 
 import PerguntaViewModel
 import android.os.Bundle
