@@ -1,11 +1,11 @@
-package com.example.mvvm2.model.database
+package com.example.questionario.model
 
-import Pergunta
+import com.example.questionario.model.entity.Pergunta
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.trabalhoquiz.model.database.dao.PerguntaDao
+import com.example.questionario.model.database.dao.PerguntaDao
 
 @Database(entities = [Pergunta::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {

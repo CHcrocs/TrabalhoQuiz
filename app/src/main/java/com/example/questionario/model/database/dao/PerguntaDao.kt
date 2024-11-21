@@ -1,6 +1,6 @@
-package com.example.trabalhoquiz.model.database.dao
+package com.example.questionario.model.database.dao
 
-import Pergunta
+import com.example.questionario.model.entity.Pergunta
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query

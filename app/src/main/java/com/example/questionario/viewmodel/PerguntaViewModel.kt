@@ -1,8 +1,10 @@
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.trabalhoquiz.model.database.dao.PerguntaDao
+import com.example.questionario.model.database.dao.PerguntaDao
 import kotlinx.coroutines.launch
+import com.example.questionario.model.entity.Pergunta
+
 
 
 class PerguntaViewModel(private val perguntaDao: PerguntaDao) : ViewModel() {

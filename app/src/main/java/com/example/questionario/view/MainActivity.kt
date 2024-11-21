@@ -2,16 +2,12 @@ package com.example.questionario.view
 
 import PerguntaViewModel
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -19,11 +15,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.unit.dp
-import com.example.mvvm2.model.database.AppDatabase
-import com.example.trabalhoquiz.model.database.dao.PerguntaDao
-import com.example.trabalhoquiz.viewmodel.PerguntaViewModelFactory
-import java.lang.reflect.Modifier
+import com.example.questionario.model.AppDatabase
+import com.example.questionario.viewmodel.PerguntaViewModelFactory
 
 
 class MainActivity : ComponentActivity() {

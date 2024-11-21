@@ -1,9 +1,9 @@
-package com.example.trabalhoquiz.viewmodel
+package com.example.questionario.viewmodel
 
 import PerguntaViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.trabalhoquiz.model.database.dao.PerguntaDao
+import com.example.questionario.model.database.dao.PerguntaDao
 
 class PerguntaViewModelFactory(
     private val perguntaDao: PerguntaDao

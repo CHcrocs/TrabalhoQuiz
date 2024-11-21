@@ -1,3 +1,5 @@
+package com.example.questionario.model.entity;
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
