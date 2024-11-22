@@ -28,14 +28,14 @@ class MainActivity : ComponentActivity() {
         val perguntaViewModel: PerguntaViewModel by viewModels { viewModelFactory } // Uso correto do delegate
 
         setContent {
-            MainLayout(perguntaViewModel)
+            CriarPerguntaLayout(perguntaViewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainLayout(perguntaViewModel: PerguntaViewModel) {
+fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel) {
 
     var enunciado by remember { mutableStateOf("") }
     var respostaCorreta by remember { mutableStateOf("") }
@@ -111,3 +111,7 @@ fun MainLayout(perguntaViewModel: PerguntaViewModel) {
     }
 }
 
+@Composable
+fun Jogolayout(){
+    // Aguardando
+}
