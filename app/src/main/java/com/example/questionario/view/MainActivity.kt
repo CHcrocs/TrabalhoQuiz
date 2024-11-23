@@ -16,10 +16,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import com.example.questionario.model.AppDatabase
+import com.example.questionario.viewmodel.CategoriaViewModel
+import com.example.questionario.viewmodel.CategoriaViewModelFactory
 import com.example.questionario.viewmodel.PerguntaViewModelFactory
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

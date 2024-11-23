@@ -2,10 +2,9 @@ package com.example.questionario.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.questionario.model.database.dao.CategoriaDao
 import com.example.questionario.model.database.dao.RespostaDao
 
-class RespostaViewModelFactoryViewModelFactory(
+class RespostaViewModelFactory(
     private val respostaDao: RespostaDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
