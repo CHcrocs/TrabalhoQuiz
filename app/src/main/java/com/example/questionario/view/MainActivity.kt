@@ -2,6 +2,7 @@ package com.example.questionario.view
 
 import PerguntaViewModel
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.activity.ComponentActivity
@@ -157,24 +158,20 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
                 if (enunciado.isBlank() || respostaCorreta.isBlank() || respostaIncorreta1.isBlank() || respostaIncorreta2.isBlank() || respostaIncorreta3.isBlank() || categoriaSelecionada.isBlank()) {
                     //não esta completo
                 } else {
-
-                    val retorno = perguntaViewModel.adicionarPergunta(
-                        enunciado,
-                        respostaCorreta,
-                        respostaIncorreta1,
-                        respostaIncorreta2,
-                        respostaIncorreta3,
-                        categoriaSelecionada
-                    )
-                    Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
-
-                    enunciado = ""
-                    respostaCorreta = ""
-                    respostaIncorreta1 = ""
-                    respostaIncorreta2 = ""
-                    respostaIncorreta3 = ""
-                    categoriaSelecionada = ""
-                    focusManager.clearFocus()
+                    try {
+                        val retorno = perguntaViewModel.adicionarPergunta(
+                            enunciado,
+                            respostaCorreta,
+                            respostaIncorreta1,
+                            respostaIncorreta2,
+                            respostaIncorreta3,
+                            categoriaSelecionada
+                        )
+                        Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Erro ao salvar: ${e.message}", Toast.LENGTH_LONG).show()
+                        Log.e("CriarPerguntaLayout", "Erro ao salvar pergunta", e)
+                    }
                 }
             }
         ) {

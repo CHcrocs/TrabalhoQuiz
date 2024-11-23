@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.questionario.model.database.dao.PerguntaDao
 import kotlinx.coroutines.launch
 import com.example.questionario.model.entity.Pergunta
-
+import kotlinx.coroutines.Dispatchers
 
 
 class PerguntaViewModel(private val perguntaDao: PerguntaDao) : ViewModel() {
@@ -18,11 +18,14 @@ class PerguntaViewModel(private val perguntaDao: PerguntaDao) : ViewModel() {
         }
     }
 
-    fun adicionarPergunta(enunciado: String, respostaCorreta: String,
-                          respostaIncorreta1: String, respostaIncorreta2: String,
-                          respostaIncorreta3: String, categoria: String) : String {
-
-
+    fun adicionarPergunta(
+        enunciado: String,
+        respostaCorreta: String,
+        respostaIncorreta1: String,
+        respostaIncorreta2: String,
+        respostaIncorreta3: String,
+        categoria: String
+    ): String {
         val pergunta = Pergunta(
             enunciado = enunciado,
             respostaCorreta = respostaCorreta,
@@ -32,10 +35,11 @@ class PerguntaViewModel(private val perguntaDao: PerguntaDao) : ViewModel() {
             categoria = categoria
         )
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) { // Alteração principal aqui
             perguntaDao.inserirPergunta(pergunta)
-            carregarPerguntas()
+            carregarPerguntas() // Esta também será executada em Dispatcher.IO
         }
-        return "Salvo com sucesso"
+
+        return "Salvo com sucesso" // Retorno imediato (não aguarda a operação terminar)
     }
 }
