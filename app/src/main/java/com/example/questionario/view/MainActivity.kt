@@ -7,41 +7,74 @@ import androidx.compose.foundation.layout.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.questionario.model.AppDatabase
 import com.example.questionario.model.entity.Pergunta
 import com.example.questionario.viewmodel.PerguntaViewModelFactory
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val dao = AppDatabase.getDatabase(applicationContext).perguntaDao()
-        val viewModelFactory = PerguntaViewModelFactory(dao) // Criação correta da fábrica
-        val perguntaViewModel: PerguntaViewModel by viewModels { viewModelFactory } // Uso correto do delegate
+        val viewModelFactory = PerguntaViewModelFactory(dao)
+        val perguntaViewModel: PerguntaViewModel by viewModels { viewModelFactory }
 
         setContent {
-            //CriarPerguntaLayout(perguntaViewModel)
-            Jogolayout(perguntaViewModel = perguntaViewModel, categoria = "Matematica")
+            AppNavigation(perguntaViewModel)
         }
     }
 }
 
+@Composable
+fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "escolherTema") {
+        composable("escolherTema") {
+            EscolherTemaLayout(navController)
+        }
+
+        composable("criarPergunta") {
+            CriarPerguntaLayout(perguntaViewModel, navController)
+        }
+        composable("jogar/{categoria}") { backStackEntry ->
+            val categoria = backStackEntry.arguments?.getString("categoria")
+            if (categoria != null) {
+                JogoLayout(perguntaViewModel, categoria, navController)
+            } else {
+                Toast.makeText(
+                    LocalContext.current,
+                    "Categoria inválida.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+}
+
+@Composable
+fun EscolherTemaLayout(navController: NavController) {
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel) {
-
+fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: NavController) {
     var enunciado by remember { mutableStateOf("") }
     var respostaCorreta by remember { mutableStateOf("") }
     var respostaIncorreta1 by remember { mutableStateOf("") }
@@ -49,15 +82,14 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel) {
     var respostaIncorreta3 by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("") }
 
-
-    var listaPergunta by perguntaViewModel.listaPerguntas
-
-
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     Column(
-
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         TextField(
             value = enunciado,
@@ -101,7 +133,6 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel) {
                 )
                 Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
 
-                // Limpar campos e foco
                 enunciado = ""
                 respostaCorreta = ""
                 respostaIncorreta1 = ""
@@ -117,26 +148,24 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel) {
 }
 
 @Composable
-fun Jogolayout(perguntaViewModel: PerguntaViewModel, categoria: String) {
-
-    // Estado para controlar a pergunta atual
+fun JogoLayout(
+    perguntaViewModel: PerguntaViewModel,
+    categoria: String,
+    navController: NavController
+) {
     var perguntaAtual by remember { mutableStateOf<Pergunta?>(null) }
     var respostasMisturadas by remember { mutableStateOf<List<String>>(emptyList()) }
     var perguntaRespondida by remember { mutableStateOf(false) }
 
     val contexto = LocalContext.current
-
-    // Lista de perguntas filtradas pela categoria
     val perguntas = perguntaViewModel.listaPerguntas.value.filter { it.categoria == categoria }
     val perguntasDisponiveis = remember { perguntas.toMutableList() }
 
-    // Função para obter uma pergunta aleatória
     fun carregarNovaPergunta() {
         if (perguntasDisponiveis.isNotEmpty()) {
             val novaPergunta = perguntasDisponiveis.random()
             perguntasDisponiveis.remove(novaPergunta)
 
-            // Atualizar o estado com a nova pergunta e misturar as respostas
             perguntaAtual = novaPergunta
             respostasMisturadas = listOf(
                 novaPergunta.respostaIncorreta1,
@@ -146,22 +175,19 @@ fun Jogolayout(perguntaViewModel: PerguntaViewModel, categoria: String) {
             ).shuffled()
             perguntaRespondida = false
         } else {
-            // Exibir mensagem ao fim do quiz
             Toast.makeText(
                 contexto,
                 "Você respondeu todas as perguntas desta categoria!",
                 Toast.LENGTH_LONG
             ).show()
-            perguntaAtual = null
+            navController.popBackStack()
         }
     }
 
-    // Carregar a primeira pergunta ao entrar na tela
     LaunchedEffect(Unit) {
         carregarNovaPergunta()
     }
 
-    // Layout principal do quiz
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -174,8 +200,6 @@ fun Jogolayout(perguntaViewModel: PerguntaViewModel, categoria: String) {
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-
-            // Mostrar as respostas como botões
             respostasMisturadas.forEach { resposta ->
                 Button(
                     onClick = {
@@ -190,13 +214,11 @@ fun Jogolayout(perguntaViewModel: PerguntaViewModel, categoria: String) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    enabled = !perguntaRespondida // Desabilitar os botões após uma resposta
+                    enabled = !perguntaRespondida
                 ) {
                     Text(text = resposta)
                 }
             }
-
-            // Botão para próxima pergunta
             if (perguntaRespondida) {
                 Button(
                     onClick = { carregarNovaPergunta() },
