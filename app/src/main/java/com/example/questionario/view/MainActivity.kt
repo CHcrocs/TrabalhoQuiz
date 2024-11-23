@@ -1,6 +1,6 @@
 package com.example.questionario.view
 
-import PerguntaViewModel
+import com.example.questionario.viewmodel.PerguntaViewModel
 import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -88,11 +88,8 @@ fun MainLayout(perguntaViewModel: PerguntaViewModel) {
             onClick = {
                 val retorno = perguntaViewModel.adicionarPergunta(
                     enunciado,
-                    respostaCorreta,
-                    respostaIncorreta1,
-                    respostaIncorreta2,
-                    respostaIncorreta3,
-                    categoria
+                    respostaId = 0,
+                    categoriaId = 0
                 )
                 Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
 
@@ -111,3 +108,10 @@ fun MainLayout(perguntaViewModel: PerguntaViewModel) {
     }
 }
 
+<<<<<<< Updated upstream
+=======
+@Composable
+fun Jogolayout() {
+    // Aguardando
+}
+>>>>>>> Stashed changes

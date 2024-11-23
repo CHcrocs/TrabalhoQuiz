@@ -1,6 +1,5 @@
 package com.example.questionario.viewmodel
 
-import PerguntaViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.questionario.model.database.dao.PerguntaDao
