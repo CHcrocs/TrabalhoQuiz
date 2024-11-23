@@ -10,9 +10,12 @@ import androidx.room.Query
 interface PerguntaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun inserirPergunta(pergunta: Pergunta)
+    fun inserirPergunta(pergunta: Pergunta): Long
 
     @Query("SELECT * FROM perguntas")
     suspend fun buscarTodos(): List<Pergunta>
+
+    @Query("SELECT * FROM perguntas WHERE categoria = :categoria")
+    suspend fun getPerguntasPorCategoria(categoria: String): List<Pergunta>
 
 }

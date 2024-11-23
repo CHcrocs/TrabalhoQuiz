@@ -48,7 +48,11 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "criarPergunta") {
+    NavHost(navController = navController, startDestination = "main") {
+        composable("main") {
+            MainLayout(navController)
+        }
+
         composable("escolherTema") {
             EscolherTemaLayout(navController)
         }
@@ -72,6 +76,11 @@ fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
 }
 
 @Composable
+fun MainLayout(navController: NavController) {
+    
+}
+
+@Composable
 fun EscolherTemaLayout(navController: NavController) {
 
 }
@@ -87,7 +96,7 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
     var categoriaSelecionada by remember { mutableStateOf("") }
     var menuExpanded by remember { mutableStateOf(false) }
 
-    val categorias = listOf("Matemática", "Esporte", "História", "Outros")
+    val categorias = listOf("Matematica", "Esporte", "Historia", "Outros")
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -155,11 +164,13 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
 
         Button(
             onClick = {
-                if (enunciado.isBlank() || respostaCorreta.isBlank() || respostaIncorreta1.isBlank() || respostaIncorreta2.isBlank() || respostaIncorreta3.isBlank() || categoriaSelecionada.isBlank()) {
-                    //não esta completo
+                if (enunciado.isBlank() || respostaCorreta.isBlank() || respostaIncorreta1.isBlank() ||
+                    respostaIncorreta2.isBlank() || respostaIncorreta3.isBlank() || categoriaSelecionada.isBlank()
+                ) {
+                    Toast.makeText(context, "Preencha todos os campos!", Toast.LENGTH_LONG).show()
                 } else {
                     try {
-                        val retorno = perguntaViewModel.adicionarPergunta(
+                        perguntaViewModel.adicionarPergunta(
                             enunciado,
                             respostaCorreta,
                             respostaIncorreta1,
@@ -167,11 +178,18 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
                             respostaIncorreta3,
                             categoriaSelecionada
                         )
-                        Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Pergunta salva com sucesso!", Toast.LENGTH_LONG).show()
                     } catch (e: Exception) {
-                        Toast.makeText(context, "Erro ao salvar: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Erro ao salvar pergunta: ${e.message}", Toast.LENGTH_LONG).show()
                         Log.e("CriarPerguntaLayout", "Erro ao salvar pergunta", e)
                     }
+                    // Limpa os campos após salvar
+                    enunciado = ""
+                    respostaCorreta = ""
+                    respostaIncorreta1 = ""
+                    respostaIncorreta2 = ""
+                    respostaIncorreta3 = ""
+                    categoriaSelecionada = ""
                 }
             }
         ) {
@@ -197,13 +215,26 @@ fun JogoLayout(
     var perguntaRespondida by remember { mutableStateOf(false) }
 
     val contexto = LocalContext.current
+
+    // Carregar perguntas da categoria e criar estado para perguntas disponíveis
     val perguntas = perguntaViewModel.listaPerguntas.value.filter { it.categoria == categoria }
-    val perguntasDisponiveis = remember { perguntas.toMutableList() }
+    var perguntasDisponiveis by remember { mutableStateOf(perguntas.toMutableList()) }
+
+    LaunchedEffect(categoria) {
+        val perguntasCarregadas = perguntaViewModel.listaPerguntas.value.filter { it.categoria == categoria }
+        if (perguntasCarregadas.isEmpty()) {
+            Log.d("JogoLayout", "Nenhuma pergunta encontrada para a categoria: $categoria")
+            Toast.makeText(contexto, "Nenhuma pergunta disponível!", Toast.LENGTH_LONG).show()
+            navController.popBackStack()
+        } else {
+            Log.d("JogoLayout", "Perguntas carregadas: ${perguntasCarregadas.size}")
+        }
+    }
 
     fun carregarNovaPergunta() {
         if (perguntasDisponiveis.isNotEmpty()) {
             val novaPergunta = perguntasDisponiveis.random()
-            perguntasDisponiveis.remove(novaPergunta)
+            perguntasDisponiveis = perguntasDisponiveis.filter { it != novaPergunta }.toMutableList()
 
             perguntaAtual = novaPergunta
             respostasMisturadas = listOf(
@@ -223,8 +254,15 @@ fun JogoLayout(
         }
     }
 
-    LaunchedEffect(Unit) {
-        carregarNovaPergunta()
+    LaunchedEffect(perguntas) {
+        Log.d("JogoLayout", "Perguntas carregadas: ${perguntas.size}")
+        if (perguntas.isNotEmpty()) {
+            carregarNovaPergunta()
+        } else {
+            Toast.makeText(contexto, "Nenhuma pergunta disponível na categoria!", Toast.LENGTH_LONG)
+                .show()
+            navController.popBackStack()
+        }
     }
 
     Column(
@@ -275,11 +313,10 @@ fun JogoLayout(
                 modifier = Modifier.padding(top = 16.dp)
             )
         }
-    }
+        Spacer(modifier = Modifier.height(25.dp))
 
-    Spacer(modifier = Modifier.height(25.dp))
-
-    Button(onClick = { navController.popBackStack() }) {
-        Text(text = "Voltar")
+        Button(onClick = { navController.popBackStack() }) {
+            Text(text = "Voltar")
+        }
     }
 }
