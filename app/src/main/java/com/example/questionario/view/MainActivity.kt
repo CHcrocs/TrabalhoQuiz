@@ -44,9 +44,7 @@ fun MainLayout(perguntaViewModel: PerguntaViewModel) {
     var respostaIncorreta3 by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("") }
 
-
     var listaPergunta by perguntaViewModel.listaPerguntas
-
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -108,10 +106,8 @@ fun MainLayout(perguntaViewModel: PerguntaViewModel) {
     }
 }
 
-<<<<<<< Updated upstream
-=======
+
 @Composable
 fun Jogolayout() {
     // Aguardando
 }
->>>>>>> Stashed changes
