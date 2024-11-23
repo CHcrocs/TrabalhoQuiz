@@ -8,7 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -44,7 +47,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "escolherTema") {
+    NavHost(navController = navController, startDestination = "criarPergunta") {
         composable("escolherTema") {
             EscolherTemaLayout(navController)
         }
@@ -80,8 +83,10 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
     var respostaIncorreta1 by remember { mutableStateOf("") }
     var respostaIncorreta2 by remember { mutableStateOf("") }
     var respostaIncorreta3 by remember { mutableStateOf("") }
-    var categoria by remember { mutableStateOf("") }
+    var categoriaSelecionada by remember { mutableStateOf("") }
+    var menuExpanded by remember { mutableStateOf(false) }
 
+    val categorias = listOf("Matemática", "Esporte", "História", "Outros")
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -116,11 +121,37 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
             onValueChange = { respostaIncorreta3 = it },
             label = { Text(text = "Resposta Incorreta 3") }
         )
-        TextField(
-            value = categoria,
-            onValueChange = { categoria = it },
-            label = { Text(text = "Categoria") }
-        )
+
+        ExposedDropdownMenuBox(
+            expanded = menuExpanded,
+            onExpandedChange = { menuExpanded = !menuExpanded }
+        ) {
+            TextField(
+                value = categoriaSelecionada,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(text = "Categoria") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuExpanded)
+                },
+                modifier = Modifier.menuAnchor()
+            )
+            ExposedDropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false }
+            ) {
+                categorias.forEach { categoria ->
+                    DropdownMenuItem(
+                        text = { Text(text = categoria) },
+                        onClick = {
+                            categoriaSelecionada = categoria
+                            menuExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+
         Button(
             onClick = {
                 val retorno = perguntaViewModel.adicionarPergunta(
@@ -129,7 +160,7 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
                     respostaIncorreta1,
                     respostaIncorreta2,
                     respostaIncorreta3,
-                    categoria
+                    categoriaSelecionada
                 )
                 Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
 
@@ -138,7 +169,7 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
                 respostaIncorreta1 = ""
                 respostaIncorreta2 = ""
                 respostaIncorreta3 = ""
-                categoria = ""
+                categoriaSelecionada = ""
                 focusManager.clearFocus()
             }
         ) {
