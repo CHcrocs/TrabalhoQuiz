@@ -154,23 +154,28 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
 
         Button(
             onClick = {
-                val retorno = perguntaViewModel.adicionarPergunta(
-                    enunciado,
-                    respostaCorreta,
-                    respostaIncorreta1,
-                    respostaIncorreta2,
-                    respostaIncorreta3,
-                    categoriaSelecionada
-                )
-                Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
+                if (enunciado.isBlank() || respostaCorreta.isBlank() || respostaIncorreta1.isBlank() || respostaIncorreta2.isBlank() || respostaIncorreta3.isBlank() || categoriaSelecionada.isBlank()) {
+                    //não esta completo
+                } else {
 
-                enunciado = ""
-                respostaCorreta = ""
-                respostaIncorreta1 = ""
-                respostaIncorreta2 = ""
-                respostaIncorreta3 = ""
-                categoriaSelecionada = ""
-                focusManager.clearFocus()
+                    val retorno = perguntaViewModel.adicionarPergunta(
+                        enunciado,
+                        respostaCorreta,
+                        respostaIncorreta1,
+                        respostaIncorreta2,
+                        respostaIncorreta3,
+                        categoriaSelecionada
+                    )
+                    Toast.makeText(context, retorno, Toast.LENGTH_LONG).show()
+
+                    enunciado = ""
+                    respostaCorreta = ""
+                    respostaIncorreta1 = ""
+                    respostaIncorreta2 = ""
+                    respostaIncorreta3 = ""
+                    categoriaSelecionada = ""
+                    focusManager.clearFocus()
+                }
             }
         ) {
             Text(text = "Salvar")
