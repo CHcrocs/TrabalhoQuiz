@@ -177,6 +177,12 @@ fun CriarPerguntaLayout(perguntaViewModel: PerguntaViewModel, navController: Nav
         ) {
             Text(text = "Salvar")
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(onClick = { navController.popBackStack() }) {
+            Text(text = "Voltar")
+        }
     }
 }
 
@@ -269,5 +275,11 @@ fun JogoLayout(
                 modifier = Modifier.padding(top = 16.dp)
             )
         }
+    }
+
+    Spacer(modifier = Modifier.height(25.dp))
+
+    Button(onClick = { navController.popBackStack() }) {
+        Text(text = "Voltar")
     }
 }
