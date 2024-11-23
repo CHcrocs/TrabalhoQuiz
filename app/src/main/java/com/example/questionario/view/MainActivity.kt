@@ -77,7 +77,7 @@ fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
 
 @Composable
 fun MainLayout(navController: NavController) {
-    
+
 }
 
 @Composable
@@ -221,13 +221,12 @@ fun JogoLayout(
     var perguntasDisponiveis by remember { mutableStateOf(perguntas.toMutableList()) }
 
     LaunchedEffect(categoria) {
-        val perguntasCarregadas = perguntaViewModel.listaPerguntas.value.filter { it.categoria == categoria }
-        if (perguntasCarregadas.isEmpty()) {
+        if (perguntas.isEmpty()) {
             Log.d("JogoLayout", "Nenhuma pergunta encontrada para a categoria: $categoria")
             Toast.makeText(contexto, "Nenhuma pergunta disponível!", Toast.LENGTH_LONG).show()
             navController.popBackStack()
         } else {
-            Log.d("JogoLayout", "Perguntas carregadas: ${perguntasCarregadas.size}")
+            Log.d("JogoLayout", "Perguntas carregadas: ${perguntas.size}")
         }
     }
 
