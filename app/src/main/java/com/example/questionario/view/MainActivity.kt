@@ -112,6 +112,49 @@ fun MainLayout(navController: NavController) {
 
 @Composable
 fun EscolherTemaLayout(navController: NavController) {
+    var categoria by remember { mutableStateOf("") }
+
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Button(
+            onClick = {
+                categoria = "Matematica"
+                navController.navigate("jogar/$categoria")
+            },
+        ) {
+            Text(text = "Matematica")
+        }
+        Button(
+            onClick = {
+                categoria = "Esporte"
+                navController.navigate("jogar/$categoria")
+            },
+        ) {
+            Text(text = "Esporte")
+        }
+        Button(
+            onClick = {
+                categoria = "Historia"
+                navController.navigate("jogar/$categoria")
+            },
+        ) {
+            Text(text = "Historia")
+        }
+        Button(
+            onClick = {
+                categoria = "Outros"
+                navController.navigate("jogar/$categoria")
+            },
+        ) {
+            Text(text = "Outros")
+        }
+    }
+    Button(onClick = { navController.popBackStack() }) {
+        Text(text = "Voltar")
+    }
 
 }
 
