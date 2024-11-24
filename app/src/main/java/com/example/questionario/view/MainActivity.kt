@@ -77,7 +77,37 @@ fun AppNavigation(perguntaViewModel: PerguntaViewModel) {
 
 @Composable
 fun MainLayout(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Bem-vindo ao QuestionÃ¡rio!",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
 
+        Button(
+            onClick = { navController.navigate("criarPergunta") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text(text = "Criar Pergunta")
+        }
+
+        Button(
+            onClick = { navController.navigate("escolherTema") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text(text = "Escolher Tema")
+        }
+    }
 }
 
 @Composable
